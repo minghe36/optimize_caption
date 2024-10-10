@@ -1,149 +1,117 @@
 1
 00:00:00,266 --> 00:00:01,600
 浏览英文视频时
-Browsing English videos
 
 2
 00:00:01,600 --> 00:00:03,366
 点击生成中文总结
-Click to generate a Chinese summary
 
 3
 00:00:03,466 --> 00:00:04,733
 一篇翻译精准
-A translation that is precise
 
 4
 00:00:04,733 --> 00:00:07,000
-高可用的摘要总结就有了
-A highly usable summary is ready
+高质量的摘要总结就有了
 
 5
 00:00:07,266 --> 00:00:08,466
 嗨小伙伴们好
-Hi, everyone
 
 6
 00:00:08,466 --> 00:00:10,966
-欢迎来到浩叔的AI音乐开发课
-Welcome to Uncle Hao's AI music development course
+欢迎来到浩叔的AI应用开发课
 
 7
 00:00:11,133 --> 00:00:13,733
-上一讲我们使用的Claude加Dify
-In the last lecture, we used Claude and Dify
+上一讲我们使用的是dify
 
 8
 00:00:13,733 --> 00:00:15,600
-实现了一个浏览器的插件
-to implement a browser plugin
+实现了一个浏览器插件
 
 9
 00:00:15,866 --> 00:00:17,800
 这一讲我们将给这个插件
-In this lecture, we will add
 
 10
 00:00:17,800 --> 00:00:19,533
 增加中文总结的功能
-a Chinese summary feature to this plugin
-
 11
 00:00:19,900 --> 00:00:21,866
-Claude实现功能的提示词
-Claude's prompt for implementing the feature
+实现功能的提示词
 
 12
 00:00:21,866 --> 00:00:23,400
 我放在文稿中了
-is placed in the document
 
 13
 00:00:23,400 --> 00:00:25,266
 你可以复现整个过程
-You can replicate the entire process
 
 14
 00:00:25,566 --> 00:00:28,133
-代码仓库的地址与工作流的文件
-The code repository address and workflow files
+代码仓库地址与工作流文件
 
 15
 00:00:28,133 --> 00:00:29,766
 我也放在文稿中了
-are also placed in the document
 
 16
 00:00:29,800 --> 00:00:32,366
-有需要的小伙伴评论区给我留言
-If you need them, leave a comment below
+有需要的朋友评论区给我留言
 
 17
 00:00:32,566 --> 00:00:33,933
 视频内容比较长
-The video content is quite long
 
 18
 00:00:34,100 --> 00:00:35,066
 建议收藏
-Suggest to bookmark it
 
 19
 00:00:35,133 --> 00:00:36,400
 让我们开始吧
-Let's get started
 
 20
 00:00:38,666 --> 00:00:41,333
-接下来我们来配置一下Dify的工作流
-Next, let's configure the Dify workflow
-
+接下来我们来配置一下dify的工作流
 21
 00:00:41,566 --> 00:00:44,166
-那我们中文总结的工作流非常的简单
-The workflow for Chinese summary is very simple
+我们中文总结的工作流非常简单
 
 22
 00:00:44,166 --> 00:00:45,566
 它只有三个节点
-It only has three nodes
 
 23
 00:00:45,800 --> 00:00:47,600
-那么第一个节点就是开始节点
-The first node is the start node
+第一个节点是开始节点
 
 24
 00:00:47,600 --> 00:00:49,600
-我们配置一下两个参数
-We configure two parameters
+我们需要配置两个参数
 
 25
 00:00:49,733 --> 00:00:52,300
-第一个参数配置字幕的一个文本
-The first parameter is the subtitle text
+第一个参数配置字幕文本
 
 26
 00:00:52,400 --> 00:00:54,266
-这里面最主要我们要调整一下
-Here, we mainly need to adjust
+这里主要要调整一下
 
 27
 00:00:54,266 --> 00:00:55,400
-最大的一个长度
-the maximum length
+最大长度
 
 28
 00:00:55,400 --> 00:00:58,133
-因为它字幕的文本可能是非常长的
-As the subtitle text can be very long
+因为字幕文本可能非常长
 
 29
 00:00:58,333 --> 00:01:01,733
-那第二个参数的话就是视频的标题
-The second parameter is the video title
+第二个参数是视频标题
 
 30
 00:01:01,900 --> 00:01:04,166
-视频的标题都是非常重要的
-The video title is very important
+视频标题非常重要

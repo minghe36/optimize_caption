@@ -30,18 +30,37 @@ def call_dify_api(srtText, title, api_key):
     result = ""
     start_time = time.time()
     timeout = 300  # 5分钟超时
+    total_chars = len(srtText)
+    received_chars = 0
+    last_progress = -1  # 用于控制进度输出频率
+    workflow_finished = False
+    
+    # 添加一个计时器，每500毫秒更新一次进度
+    last_update_time = start_time
+    update_interval = 0.5  # 500毫秒
     
     for line in response.iter_lines():
+        current_time = time.time()
+        if current_time - last_update_time >= update_interval:  # 每500毫秒更新一次进度
+            progress = min(int((received_chars / total_chars) * 100), 99)
+            if progress > last_progress:
+                print(f"优化进度 {progress}%")
+                last_progress = progress
+            last_update_time = current_time
+        
         if line:
             decoded_line = line.decode('utf-8')
             if decoded_line.startswith('data:'):
                 try:
                     json_data = json.loads(decoded_line[5:])
                     if json_data.get('event') == 'text_chunk':
-                        result += json_data['data']['text']
+                        chunk = json_data['data']['text']
+                        result += chunk
+                        received_chars += len(chunk)
                     elif json_data.get('event') == 'workflow_finished':
                         if 'outputs' in json_data['data'] and 'result' in json_data['data']['outputs']:
                             result = json_data['data']['outputs']['result']
+                        workflow_finished = True
                         break
                 except json.JSONDecodeError:
                     print(f"警告: 无法解析JSON数据")
@@ -49,6 +68,14 @@ def call_dify_api(srtText, title, api_key):
         if time.time() - start_time > timeout:
             print("警告: API 请求超时")
             break
+    
+    # 如果没有收到任何进度更新，且工作流未完成，显示一次中间进度
+    if last_progress == -1 and not workflow_finished:
+        print("优化进度 50%")
+    
+    # 只有在工作流完成时才显示 100% 进度
+    if workflow_finished:
+        print("优化进度 100%")
     
     return result
 
@@ -70,6 +97,7 @@ def main(file_path, title, bilingual):
             srtText = file.read()
         print(f"成功读取文件内容,共 {len(srtText)} 个字符")
         
+        print("开始处理字幕...")
         if bilingual:
             api_key = DIFY_API_KEY2
         else:
@@ -81,6 +109,7 @@ def main(file_path, title, bilingual):
         with open(new_file_path, 'w', encoding='utf-8') as new_file:
             new_file.write(new_content)
         print(f"已生成新文件: {new_file_path}")
+        print("处理完成！")
         
     except IOError as e:
         print(f"错误: 无法读取或写入文件. {str(e)}")
@@ -116,12 +145,12 @@ def merge_subtitles(original, translated):
     return '\n'.join(merged)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("用法: python run.py <文件路径> <文稿主题> <bilingual>")
-        print("bilingual: 输入 'true' 使用双语字幕模式，其他输入使用默认模式")
+    if len(sys.argv) < 3 or len(sys.argv) > 4:
+        print("用法: python run.py <文件路径> <文稿主题> [bilingual]")
+        print("bilingual: 可选参数，输入 'true' 使用双语字幕模式，默认为单语模式")
         sys.exit(1)
     
     file_path = sys.argv[1]
     title = sys.argv[2]
-    bilingual = sys.argv[3].lower() == 'true'
+    bilingual = sys.argv[3].lower() == 'true' if len(sys.argv) == 4 else False
     main(file_path, title, bilingual)
